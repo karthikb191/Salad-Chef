@@ -12,18 +12,9 @@ public enum Veggie
     Carrot
 }
 
-public interface IInteractable
-{
-    void Interact(Player p);
-}
-
-public interface IPickable : IInteractable
-{
-    void Pick(Player p);
-}
 
 public class Vegetable : MonoBehaviour, IPickable {
-    bool shredded = false;
+    bool chopped = false;
 
     public Veggie veggieType = Veggie.Tomato;
     
@@ -34,8 +25,12 @@ public class Vegetable : MonoBehaviour, IPickable {
 
     public void Pick(Player p)
     {
-        //Instantiate a copy and send to the player
         p.AddToItems(this);
+    }
+
+    public void ChopVegetable()
+    {
+        chopped = true;
     }
 
 }

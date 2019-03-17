@@ -15,6 +15,10 @@ public class Player : MonoBehaviour
     public int maxCarryCapacity = 2;
 
     float multiplier = 1;
+    bool pauseMovement = false;
+
+    GameObject rightHand;
+    GameObject leftHand;
 
     Vector3 Move()
     {
@@ -53,7 +57,7 @@ public class Player : MonoBehaviour
         IInteractable i = collider.GetComponent<IInteractable>();
         if(i != null)
         {
-            Debug.Log("Came into contact with pickable object");
+            //Debug.Log("Came into contact with interactable object");
             interactableObjectOnFocus = i;
         }
         else
@@ -72,12 +76,15 @@ public class Player : MonoBehaviour
 
     protected void Start()
     {
+        rightHand = transform.Find("Right Hand").gameObject;
+        leftHand = transform.Find("Left Hand").gameObject;
         //itemsCarrying = new ArrayList(2);
     }
 
     protected void Update()
     {
-        gameObject.transform.Translate(Move());
+        if(!pauseMovement)
+            gameObject.transform.Translate(Move());
 
         if (Input.GetKeyDown(action))
         {
@@ -116,8 +123,8 @@ public class Player : MonoBehaviour
         Vegetable v = obj as Vegetable;
         if (v)
         {
-            Debug.Log("vegeable is: " + v.veggieType);
             Debug.Log("Trying to pickup a vegetable");
+            Debug.Log("vegetable is: " + v.veggieType);
             for(int i = 0; i < itemsCarrying.Count; i++)
             {
                 Vegetable v2 = itemsCarrying[i] as Vegetable;
@@ -125,13 +132,29 @@ public class Player : MonoBehaviour
                 {
                     if(v.veggieType == v2.veggieType)
                     {
-                        Debug.Log("Vegetable already being carried by player. No need to add again");
+                        Debug.Log("Putting vegetable back");
+                        RemoveVegetable(v2, true);
                         return;
                     }
                 }
             }
-            //If the vegetable type is not being carried, then add it to the player's list
-            itemsCarrying.Add(obj);
+            //If the vegetable type is not being carried, clone it 
+            Vegetable clone = Instantiate(v);
+
+            //Assign to one of the hands
+            if (rightHand.transform.childCount == 0)
+            {
+                clone.transform.SetParent(rightHand.transform);
+            }
+            else
+            {
+                clone.transform.SetParent(leftHand.transform);
+            }
+            clone.transform.localPosition = Vector3.zero;
+            clone.transform.localScale /= 2;
+
+            //add it to the player's list
+            itemsCarrying.Add(clone);
             return;
         }
         
@@ -140,7 +163,21 @@ public class Player : MonoBehaviour
         {
             //No special conditions required for salad as it's only possible to make one salad at a time
             Debug.Log("Trying to pickup the salad");
-            itemsCarrying.Add(obj);
+
+            //Salad can't be cloned
+            //Assign to one of the hands
+            if (rightHand.transform.childCount == 0)
+            {
+                s.transform.SetParent(rightHand.transform);
+                s.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                s.transform.SetParent(leftHand.transform);
+                s.transform.localPosition = Vector3.zero;
+            }
+
+            itemsCarrying.Add(s);
         }
         
     }
@@ -160,9 +197,26 @@ public class Player : MonoBehaviour
         Debug.Log("No salad to remove");
     }
 
-    public void RemoveVegetable()
+    public void RemoveVegetable(Vegetable v, bool destroy = false)
     {
+        //Remove from the player's hand
+        v.transform.parent = null;
+        //Remove from the list
+        itemsCarrying.Remove(v);
 
+        if (destroy)
+        {
+            Destroy(v.gameObject);
+        }
+    }
+
+    public void PauseMovement()
+    {
+        pauseMovement = true;
+    }
+    public void ResumeMovement()
+    {
+        pauseMovement = false;
     }
 
 }
