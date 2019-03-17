@@ -73,7 +73,7 @@ public class ChoppingBoard : MonoBehaviour, IChop {
     {
         boardAssignedTo.PauseMovement();
         //Wait for a while to finish chopping
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(2);
 
         v.ChopVegetable();
 
@@ -127,6 +127,17 @@ public class ChoppingBoard : MonoBehaviour, IChop {
         {
             Debug.Log("Something went wrong. Salad is null");
         }
+    }
+
+    public void AddSaladToPlayer(Player p)
+    {
+        if (salad.CanServeSalad())
+        {
+            salad.Interact(p);
+            //salad object must be set to null as the salad is not on the chopping board, but with player instead
+            salad = null;
+        }
+
     }
 
 }

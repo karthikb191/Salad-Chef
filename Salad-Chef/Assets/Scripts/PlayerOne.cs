@@ -91,6 +91,24 @@ public class Player : MonoBehaviour
             Interact(interactableObjectOnFocus);
             //PickUp(pickableObjectOnFocus);
         }
+        if (Input.GetKeyDown(pickUpSalad))
+        {
+            PickUpSalad(interactableObjectOnFocus);
+        }
+    }
+
+    void PickUpSalad(IInteractable obj)
+    {
+        ChoppingBoard cb = obj as ChoppingBoard;
+        if (cb)
+        {
+            Debug.Log("chopping board access is a success");
+            cb.AddSaladToPlayer(this);
+        }
+        else
+        {
+            Debug.Log("Not chopping Board");
+        }
     }
 
     public List<Object> GetItemsCarrying()
@@ -186,8 +204,16 @@ public class Player : MonoBehaviour
     {
 
     }
+    public Salad GetSalad()
+    {
+        for (int i = 0; i < itemsCarrying.Count; i++)
+        {
+            if (itemsCarrying[i] as Salad)
+                return itemsCarrying[i] as Salad;
+        }
+        return null;
+    }
 
-    
     public void RemoveSalad()
     {
         for(int i = 0; i < itemsCarrying.Count; i++)

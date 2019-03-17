@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Salad : MonoBehaviour {
+public class Salad : MonoBehaviour, IPickable {
 
     List<Veggie> vegetableList = new List<Veggie>();
 
@@ -20,10 +20,34 @@ public class Salad : MonoBehaviour {
             Debug.Log("Salad already contains the specified type");
         }
     }
-	
+
+    public void Interact(Player p)
+    {
+        Pick(p);
+    }
+
+    public void Pick(Player p)
+    {
+        p.AddToItems(this);
+    }
+    
+
     public bool ContainsVegetable(Vegetable v)
     {
         return vegetableList.Contains(v.veggieType);    
+    }
+    public bool ContainsVegetable(Veggie v)
+    {
+        return vegetableList.Contains(v);
+    }
+
+    public bool CanServeSalad()
+    {
+        if (vegetableList.Count > 1)
+            return true;
+
+        Debug.Log("Chopping up a single item doesn't make a salad");
+        return false;
     }
 
 }

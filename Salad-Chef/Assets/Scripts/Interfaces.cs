@@ -16,3 +16,8 @@ public interface IChop : IInteractable
 {
     void Chop(Vegetable v);
 }
+
+public interface IServable : IInteractable
+{
+    void Serve(Salad s);
+}
