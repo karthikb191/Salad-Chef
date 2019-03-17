@@ -33,7 +33,7 @@ public class CustomerManager : MonoBehaviour {
 	}
 
     float counter = 0;
-    float waitPeriod = 1;
+    float waitPeriod = 2;
 
 	// Update is called once per frame
 	void Update () {
@@ -53,8 +53,9 @@ public class CustomerManager : MonoBehaviour {
             if(availableCustomerPointIndices.Count > 0)
             {
                 int slot = Random.Range(0, availableCustomerPointIndices.Count);
-
-                if (!customerPoints[slot].HasCustomer())
+                int index = availableCustomerPointIndices[slot];
+                int randomIndexToCheck = Random.Range(0, customerPoints.Count);
+                if (!customerPoints[randomIndexToCheck].HasCustomer())
                 {
                     Customer c;
                     if (deactiveCustomers.Count > 0)
@@ -71,7 +72,6 @@ public class CustomerManager : MonoBehaviour {
                     }
 
                     //Remove from the available slot to indicate that the slot is currently full
-                    int index = availableCustomerPointIndices[slot];
                     availableCustomerPointIndices.RemoveAt(slot);
                     customerPoints[index].TakeInCustomer(c);
                 }

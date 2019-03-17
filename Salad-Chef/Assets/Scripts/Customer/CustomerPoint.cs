@@ -12,6 +12,7 @@ public class CustomerPoint : MonoBehaviour, IServable {
         customer.transform.SetParent(transform);
         customer.transform.localPosition = Vector3.zero;
         customer.AssignedToPoint = this;
+        customer.DecideOrder();
     }
 
     public void Interact(Player p)
@@ -44,6 +45,7 @@ public class CustomerPoint : MonoBehaviour, IServable {
     public void RemoveCustomer()
     {
         customer.transform.parent = null;
+        customer.ClearOrder();
         customer = null;
     }
 
