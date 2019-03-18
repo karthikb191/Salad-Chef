@@ -10,12 +10,13 @@ public class Customer : MonoBehaviour {
     float waitPeriod = 15;
     float timeLeft;
 
-    
+    Player servedBy;
+    List<Player> wrongServeBy = new List<Player>();
 
     public List<Veggie> saladCombo = new List<Veggie>();
     
     public CustomerPoint AssignedToPoint { get; set; }
-
+    
     public void DecideOrder()
     {
         List<string> saladDishes = new List<string>();
@@ -75,6 +76,12 @@ public class Customer : MonoBehaviour {
         {
             angry = true;
             //TODO change the character color or something
+
+            //Add to the customer's order list that he is angry
+            AssignedToPoint.Text.text += "\n" + "<b><i><color=#ff0000>" + "Customer Angry destroyed salad" + "</color></i></b>";
+            if (!wrongServeBy.Contains(p)) { wrongServeBy.Add(p); }
+            //Destroy salad
+            Destroy(s.gameObject);
         }
         else
         {
@@ -83,14 +90,14 @@ public class Customer : MonoBehaviour {
             //Start eating the salad
             StartCoroutine(Eat(s));
 
-            //If served before 70% of time, must spawn a pickup
+            //If served before 70% of time, must spawn a pickup. Also, the customer must not have been angry previously
             TrySpawnPickUp(p);
         }
     }
 
     void TrySpawnPickUp(Player p)
     {
-        if(timeLeft / waitPeriod > 0.3f)
+        if(timeLeft / waitPeriod > 0.3f && !angry)
         {
             Vector3 positionToSpawn = Vector3.zero;
             positionToSpawn.x = Random.Range(CustomerManager.Instance.rectangleToSpawnPickups.bounds.min.x,
@@ -114,6 +121,7 @@ public class Customer : MonoBehaviour {
         }
         Destroy(s);
         Debug.Log("Customer is satisfied");
+        servedBy.AddScore(100);
         Leave();
     }
 
@@ -127,7 +135,6 @@ public class Customer : MonoBehaviour {
         }
         return true;
     }
-
     
     private void Update()
     {
@@ -145,6 +152,21 @@ public class Customer : MonoBehaviour {
 
     void Leave()
     {
+        if (!served)
+        {
+            if (angry)
+            {
+                for(int i = 0; i < wrongServeBy.Count; i++)
+                {
+                    //Minus double points for whoever served the wrong order
+                    wrongServeBy[i].AddScore(-CustomerManager.Instance.DefaultScore * 2);
+                }
+            }
+            else
+            {
+                CustomerManager.Instance.CustomerLeftHungry();
+            }
+        }
         //Score, etc goes here
         CustomerManager.Instance.RemoveCustomer(this);
     }

@@ -6,7 +6,7 @@ public class CustomerManager : MonoBehaviour {
 
     public static CustomerManager Instance { get; set; }
 
-
+    public int DefaultScore = 100;
     public List<Sprite> customerSprites;
     public GameObject customerPrefab;
 
@@ -21,6 +21,8 @@ public class CustomerManager : MonoBehaviour {
 
     List<int> availableCustomerPointIndices = new List<int>();
 
+    List<Player> allPlayers = new List<Player>();
+
     private void Awake()
     {
         Instance = this;
@@ -34,6 +36,8 @@ public class CustomerManager : MonoBehaviour {
         {
             availableCustomerPointIndices.Add(i);
         }
+
+        allPlayers.AddRange(FindObjectsOfType<Player>());
 	}
 
     float counter = 0;
@@ -99,6 +103,14 @@ public class CustomerManager : MonoBehaviour {
         activeCustomers.Remove(c);
         deactiveCustomers.Add(c);
 
+    }
+
+    public void CustomerLeftHungry()
+    {
+        for(int i = 0; i < allPlayers.Count; i++)
+        {
+            allPlayers[i].AddScore(-DefaultScore);
+        }
     }
 
 }

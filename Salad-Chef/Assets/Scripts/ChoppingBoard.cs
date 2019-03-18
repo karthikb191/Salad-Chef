@@ -161,7 +161,13 @@ public class ChoppingBoard : MonoBehaviour, IChop {
             //salad object must be set to null as the salad is not on the chopping board, but with player instead
             salad = null;
         }
-
+        if(salad == null)
+        {
+            if(veggie != null)
+            {
+                MakeSalad(veggie);
+            }
+        }
     }
 
 }

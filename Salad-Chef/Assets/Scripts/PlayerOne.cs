@@ -167,24 +167,17 @@ public class Player : MonoBehaviour
 
     public void AddToItems(Object obj)
     {
-        if(itemsCarrying.Count >= maxCarryCapacity)
-        {
-            Debug.Log("Carry capacity at maximum");
-            return;
-        }
-
-        //Check to see if the vegetable we are trying to pick up is already with the player
         Vegetable v = obj as Vegetable;
         if (v)
         {
             Debug.Log("Trying to pickup a vegetable");
             Debug.Log("vegetable is: " + v.veggieType);
-            for(int i = 0; i < itemsCarrying.Count; i++)
+            for (int i = 0; i < itemsCarrying.Count; i++)
             {
                 Vegetable v2 = itemsCarrying[i] as Vegetable;
                 if (v2)
                 {
-                    if(v.veggieType == v2.veggieType)
+                    if (v.veggieType == v2.veggieType)
                     {
                         Debug.Log("Putting vegetable back");
                         RemoveVegetable(v2, true);
@@ -192,6 +185,22 @@ public class Player : MonoBehaviour
                     }
                 }
             }
+
+        }
+
+        if (itemsCarrying.Count >= maxCarryCapacity)
+        {
+            Debug.Log("Carry capacity at maximum");
+            return;
+        }
+
+        //Check to see if the vegetable we are trying to pick up is already with the player
+        v = obj as Vegetable;
+        if (v)
+        {
+            Debug.Log("Trying to pickup a vegetable");
+            Debug.Log("vegetable is: " + v.veggieType);
+
             //If the vegetable type is not being carried, clone it 
             Vegetable clone = Instantiate(v);
 
@@ -260,6 +269,7 @@ public class Player : MonoBehaviour
             if (itemsCarrying[i] as Salad)
             {
                 Salad s = itemsCarrying[i] as Salad;
+                s.transform.parent = null;
                 itemsCarrying.RemoveAt(i);
                 return s;
             }

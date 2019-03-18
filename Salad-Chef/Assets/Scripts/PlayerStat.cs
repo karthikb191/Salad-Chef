@@ -36,11 +36,11 @@ public class PlayerStat : MonoBehaviour {
 
         for (int i = 0; i < itemsCarrying.Count; i++)
         {
-            ItemsText.text += i + "/n";
-            if(i != itemsCarrying.Count - 1)
-            {
-                ItemsText.text += GetItem(itemsCarrying[i]);
-            }
+            
+            ItemsText.text += "<size=17>" + (i+1) + "</size>" + "\n";
+            
+            ItemsText.text += GetItem(itemsCarrying[i]);
+            
         }
     }
 
@@ -50,7 +50,7 @@ public class PlayerStat : MonoBehaviour {
         if(o as Vegetable)
         {
             Vegetable v = o as Vegetable;
-            res = v.veggieType.ToString();
+            res = v.veggieType.ToString() + "\n";
             return res;
         }
         else
@@ -58,13 +58,14 @@ public class PlayerStat : MonoBehaviour {
             if(o as Salad)
             {
                 Salad s = o as Salad;
-                res += "SALAD" + "\n";
+                res += "<size=17>" + "<b>" + "SALAD" + "</b>" + "</size>" + "\n";
                 for(int i = 0; i < s.vegetableList.Count; i++)
                 {
                     if (i != s.vegetableList.Count - 1)
                     {
                         res += s.vegetableList[i].ToString() + "\n";
                         res += "+" + "\n";
+                        
                     }
                     else
                     {
