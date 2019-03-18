@@ -12,7 +12,12 @@ public class Player : MonoBehaviour
     public KeyCode action;
     public KeyCode pickUpSalad;
 
-    public float speed = 10;    //Default speed of the player
+
+    public float TimeLeft { set; get; }
+    public float Score { set; get; }
+    public float Speed { set; get; }
+    public float defaultTime = 300;   //Setting default time to 300 seconds(5 minutes)
+    public float defaultSpeed = 6;    //Default speed of the player
     public int maxCarryCapacity = 2;
 
     float multiplier = 1;
@@ -26,32 +31,7 @@ public class Player : MonoBehaviour
     public static float panelHeight = 110;
     public RectTransform InstructionPanel { get; set; }
     public Text Text { get; set; }
-
-    Vector3 Move()
-    {
-        Vector3 displacement = Vector3.zero;
-        bool keyPressed = false;
-        
-
-        if (Input.GetKey(up)) { displacement.y += multiplier * speed * Time.deltaTime; keyPressed = true; }
-        if (Input.GetKey(down)) { displacement.y -= multiplier * speed * Time.deltaTime; keyPressed = true; }
-        if (Input.GetKey(left)) { displacement.x -= multiplier * speed * Time.deltaTime; keyPressed = true; }
-        if (Input.GetKey(right)) { displacement.x += multiplier * speed * Time.deltaTime; keyPressed = true; }
-
-        //TODO: ADD the smooth movement logic and direction interpolation
-        //TODO: Fix unity collider issue
-        if (keyPressed)
-        {
-
-        }
-        else
-        {
-
-        }
-
-        return displacement;
-    }
-
+    
     List<Object> itemsCarrying = new List<Object>();
 
     public delegate void Action();
@@ -92,6 +72,9 @@ public class Player : MonoBehaviour
 
     protected void Start()
     {
+        TimeLeft = defaultTime; Score = 0; Speed = defaultSpeed;
+
+
         rightHand = transform.Find("Right Hand").gameObject;
         leftHand = transform.Find("Left Hand").gameObject;
         //itemsCarrying = new ArrayList(2);
@@ -106,18 +89,49 @@ public class Player : MonoBehaviour
 
     protected void Update()
     {
-        if(!pauseMovement)
-            gameObject.transform.Translate(Move());
+        if (!GameManager.Instance.Paused)
+        {
+            TimeLeft -= Time.deltaTime;
 
-        if (Input.GetKeyDown(action))
-        {
-            Interact(interactableObjectOnFocus);
-        }
-        if (Input.GetKeyDown(pickUpSalad))
-        {
-            PickUpSalad(interactableObjectOnFocus);
+            if(!pauseMovement)
+                gameObject.transform.Translate(Move());
+
+            if (Input.GetKeyDown(action))
+            {
+                Interact(interactableObjectOnFocus);
+            }
+            if (Input.GetKeyDown(pickUpSalad))
+            {
+                PickUpSalad(interactableObjectOnFocus);
+            }
         }
     }
+
+    Vector3 Move()
+    {
+        Vector3 displacement = Vector3.zero;
+        bool keyPressed = false;
+
+
+        if (Input.GetKey(up)) { displacement.y += multiplier * Speed * Time.deltaTime; keyPressed = true; }
+        if (Input.GetKey(down)) { displacement.y -= multiplier * Speed * Time.deltaTime; keyPressed = true; }
+        if (Input.GetKey(left)) { displacement.x -= multiplier * Speed * Time.deltaTime; keyPressed = true; }
+        if (Input.GetKey(right)) { displacement.x += multiplier * Speed * Time.deltaTime; keyPressed = true; }
+
+        //TODO: ADD the smooth movement logic and direction interpolation
+        //TODO: Fix unity collider issue
+        if (keyPressed)
+        {
+
+        }
+        else
+        {
+
+        }
+
+        return displacement;
+    }
+    
 
     void PickUpSalad(IInteractable obj)
     {
@@ -222,9 +236,17 @@ public class Player : MonoBehaviour
         
     }
 
-    public void PowerUp()
+    public void AddSpeed(float amount)
     {
-
+        Speed = Speed >= 25 ? Speed : Speed + amount;
+    }
+    public void AddScore(float amount)
+    {
+        Score += amount;
+    }
+    public void AddTime(float amount)
+    {
+        TimeLeft += amount;
     }
 
     /// <summary>

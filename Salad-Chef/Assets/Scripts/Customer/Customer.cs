@@ -8,6 +8,9 @@ public class Customer : MonoBehaviour {
     bool served = false;
 
     float waitPeriod = 15;
+    float timeLeft;
+
+    
 
     public List<Veggie> saladCombo = new List<Veggie>();
     
@@ -53,11 +56,12 @@ public class Customer : MonoBehaviour {
     {
         //Add 15 seconds for every item in the chosen order
         waitPeriod = saladCombo.Count * 15;
+        timeLeft = waitPeriod;
 
         //Set the max value of the wait slider
         AssignedToPoint.waitSlider.minValue = 0;
-        AssignedToPoint.waitSlider.maxValue = waitPeriod;
-        AssignedToPoint.waitSlider.value = waitPeriod;
+        AssignedToPoint.waitSlider.maxValue = timeLeft;
+        AssignedToPoint.waitSlider.value = timeLeft;
     }
 
     public void ClearOrder()
@@ -65,7 +69,7 @@ public class Customer : MonoBehaviour {
         saladCombo.Clear();
     }
 
-    public void Serve(Salad s)
+    public void Serve(Salad s, Player p)
     {
         if (!IsOrderValid(s))
         {
@@ -78,6 +82,26 @@ public class Customer : MonoBehaviour {
             s.transform.parent = this.transform;
             //Start eating the salad
             StartCoroutine(Eat(s));
+
+            //If served before 70% of time, must spawn a pickup
+            TrySpawnPickUp(p);
+        }
+    }
+
+    void TrySpawnPickUp(Player p)
+    {
+        if(timeLeft / waitPeriod > 0.3f)
+        {
+            Vector3 positionToSpawn = Vector3.zero;
+            positionToSpawn.x = Random.Range(CustomerManager.Instance.rectangleToSpawnPickups.bounds.min.x,
+                                            CustomerManager.Instance.rectangleToSpawnPickups.bounds.max.x);
+            positionToSpawn.y = Random.Range(CustomerManager.Instance.rectangleToSpawnPickups.bounds.min.y,
+                                            CustomerManager.Instance.rectangleToSpawnPickups.bounds.max.y);
+
+            int randNum = Random.Range(0, CustomerManager.Instance.possiblePickups.Count);
+            
+            CustomerManager.Instance.possiblePickups[randNum].Spawn(p, positionToSpawn);
+            
         }
     }
 
@@ -110,9 +134,9 @@ public class Customer : MonoBehaviour {
         if (!served)
         {
             //Place Holder code to check instantiation of customers
-            waitPeriod -= Time.deltaTime;
-            AssignedToPoint.waitSlider.value = waitPeriod;
-            if(waitPeriod <= 0)
+            timeLeft -= Time.deltaTime;
+            AssignedToPoint.waitSlider.value = timeLeft;
+            if(timeLeft <= 0)
             {
                 Leave();
             }

@@ -20,5 +20,5 @@ public interface IChop : IInteractable
 
 public interface IServable : IInteractable
 {
-    void Serve(Salad s);
+    void Serve(Salad s, Player p);
 }

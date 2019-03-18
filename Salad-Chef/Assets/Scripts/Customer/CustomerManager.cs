@@ -10,6 +10,10 @@ public class CustomerManager : MonoBehaviour {
     public List<Sprite> customerSprites;
     public GameObject customerPrefab;
 
+    //Pickup variables
+    public List<PickUp> possiblePickups;
+    public SpriteRenderer rectangleToSpawnPickups;
+
     List<CustomerPoint> customerPoints = new List<CustomerPoint>();
 
     List<Customer> activeCustomers = new List<Customer>();

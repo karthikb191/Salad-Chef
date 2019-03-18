@@ -62,12 +62,12 @@ public class CustomerPoint : MonoBehaviour, IServable {
     
     public void Interact(Player p)
     {
-        Serve(p.ServeSalad());
+        Serve(p.ServeSalad(), p);
         //Remove salad from the player
         p.RemoveSalad();
     }
 
-    public void Serve(Salad s)
+    public void Serve(Salad s, Player p)
     {
         //Only serve if there;s a customer
         if (HasCustomer())
@@ -78,7 +78,7 @@ public class CustomerPoint : MonoBehaviour, IServable {
             }
             else
             {
-                customer.Serve(s);
+                customer.Serve(s, p);
             }
         }
     }

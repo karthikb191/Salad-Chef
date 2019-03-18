@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Salad : MonoBehaviour, IPickable {
 
-    List<Veggie> vegetableList = new List<Veggie>();
+    [HideInInspector]
+    public List<Veggie> vegetableList = new List<Veggie>();
 
     public void AddVegetable(Vegetable v)
     {
