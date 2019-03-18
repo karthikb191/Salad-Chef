@@ -8,7 +8,6 @@ public class Customer : MonoBehaviour {
     bool served = false;
 
     float waitPeriod = 15;
-    float timeElapsed = 0;
 
     public List<Veggie> saladCombo = new List<Veggie>();
     
@@ -31,9 +30,19 @@ public class Customer : MonoBehaviour {
             saladDishes.RemoveAt(randomDish);
         }
 
+        //Once the customer has decided the order, enable the canvas and show the order
         Debug.Log("order is: ");
         for(int i = 0; i < saladCombo.Count; i++)
         {
+            if(i != saladCombo.Count - 1)
+            {
+                AssignedToPoint.Text.text += saladCombo[i] + "\n";
+            }
+            else
+            {
+                AssignedToPoint.Text.text += saladCombo[i];
+            }
+
             Debug.Log(saladCombo[i]);
         }
 
@@ -44,6 +53,11 @@ public class Customer : MonoBehaviour {
     {
         //Add 15 seconds for every item in the chosen order
         waitPeriod = saladCombo.Count * 15;
+
+        //Set the max value of the wait slider
+        AssignedToPoint.waitSlider.minValue = 0;
+        AssignedToPoint.waitSlider.maxValue = waitPeriod;
+        AssignedToPoint.waitSlider.value = waitPeriod;
     }
 
     public void ClearOrder()
@@ -56,6 +70,7 @@ public class Customer : MonoBehaviour {
         if (!IsOrderValid(s))
         {
             angry = true;
+            //TODO change the character color or something
         }
         else
         {
@@ -95,8 +110,9 @@ public class Customer : MonoBehaviour {
         if (!served)
         {
             //Place Holder code to check instantiation of customers
-            timeElapsed += Time.deltaTime;
-            if(timeElapsed >= waitPeriod)
+            waitPeriod -= Time.deltaTime;
+            AssignedToPoint.waitSlider.value = waitPeriod;
+            if(waitPeriod <= 0)
             {
                 Leave();
             }
@@ -105,7 +121,6 @@ public class Customer : MonoBehaviour {
 
     void Leave()
     {
-        timeElapsed = 0;
         //Score, etc goes here
         CustomerManager.Instance.RemoveCustomer(this);
     }

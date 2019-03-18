@@ -24,6 +24,30 @@ public class ChoppingBoard : MonoBehaviour, IChop {
         saladSlot = transform.Find("Salad Slot").gameObject;
     }
 
+    public void ShowPrompt(Player p)
+    {
+        //Get the position of the gameobject in the screen space
+        Vector3 viewportPosition = Camera.main.WorldToViewportPoint(gameObject.transform.position);
+        Debug.Log("Viewport position: " + viewportPosition);
+
+        //Assign the position of the player's instruction panel according to the viewport position of the interactable object
+        Vector3 panelPosition = Vector3.zero;
+
+        if(viewportPosition.y < 0.5)
+        {
+            panelPosition.y = Player.panelYOffset;
+        }
+
+        p.InstructionPanel.sizeDelta = new Vector2(p.InstructionPanel.sizeDelta.x, Player.panelHeight * 2);
+        p.Text.GetComponent<RectTransform>().sizeDelta = p.InstructionPanel.sizeDelta;
+        p.InstructionPanel.gameObject.SetActive(true);
+        p.InstructionPanel.localPosition = panelPosition;
+        p.Text.fontSize = 70;
+        p.Text.text = "Press " + p.action + " to chop vegetable \n" + 
+                      "Press " + p.pickUpSalad + " to pick up salad";
+    }
+
+
     //Default interaction with chopping board is to place vegetables on it for chopping
     public void Interact(Player p)
     {

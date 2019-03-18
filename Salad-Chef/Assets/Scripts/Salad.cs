@@ -21,8 +21,19 @@ public class Salad : MonoBehaviour, IPickable {
         }
     }
 
+    public void ShowPrompt(Player p)
+    {
+
+    }
+
     public void Interact(Player p)
     {
+        //disable the collider
+        if (GetComponent<Collider2D>())
+        {
+            GetComponent<Collider2D>().enabled = false;
+        }
+
         Pick(p);
     }
 

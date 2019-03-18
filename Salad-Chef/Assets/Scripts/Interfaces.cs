@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IInteractable
 {
     void Interact(Player p);
+    void ShowPrompt(Player p);
 }
 
 public interface IPickable : IInteractable

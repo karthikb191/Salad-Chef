@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -19,6 +20,12 @@ public class Player : MonoBehaviour
 
     GameObject rightHand;
     GameObject leftHand;
+
+    public static float panelXOffset = 550;
+    public static float panelYOffset = 160;
+    public static float panelHeight = 110;
+    public RectTransform InstructionPanel { get; set; }
+    public Text Text { get; set; }
 
     Vector3 Move()
     {
@@ -59,18 +66,27 @@ public class Player : MonoBehaviour
         {
             //Debug.Log("Came into contact with interactable object");
             interactableObjectOnFocus = i;
+            interactableObjectOnFocus.ShowPrompt(this);
         }
         else
         {
             Debug.Log("meh");
         }
     }
+
     private void OnTriggerExit2D(Collider2D collider)
     {
         IInteractable i = collider.GetComponent<IInteractable>();
         if (interactableObjectOnFocus == i)
         {
             interactableObjectOnFocus = null;
+
+            //Deactivate the panel when the interactable object is null
+            InstructionPanel.gameObject.SetActive(false);
+            Text.text = "";
+            Text.fontSize = 90;
+            InstructionPanel.sizeDelta = new Vector2(InstructionPanel.sizeDelta.x, panelHeight);
+            Text.GetComponent<RectTransform>().sizeDelta = InstructionPanel.sizeDelta;
         }
     }
 
@@ -79,6 +95,13 @@ public class Player : MonoBehaviour
         rightHand = transform.Find("Right Hand").gameObject;
         leftHand = transform.Find("Left Hand").gameObject;
         //itemsCarrying = new ArrayList(2);
+
+        //Get the canvas components
+        InstructionPanel = transform.Find("Player Canvas").transform.GetChild(0).gameObject.GetComponent<RectTransform>();
+        Text = InstructionPanel.transform.GetChild(0).GetComponent<Text>();
+
+        //deactivate the instruction panel initially
+        InstructionPanel.gameObject.SetActive(false);
     }
 
     protected void Update()
@@ -89,7 +112,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(action))
         {
             Interact(interactableObjectOnFocus);
-            //PickUp(pickableObjectOnFocus);
         }
         if (Input.GetKeyDown(pickUpSalad))
         {
@@ -204,21 +226,35 @@ public class Player : MonoBehaviour
     {
 
     }
-    public Salad GetSalad()
+
+    /// <summary>
+    /// returns salad being carried by the player. Also removes from the player's currently carrying items list
+    /// </summary>
+    /// <returns> first salad item carried by item. null, if not being carried</returns>
+    public Salad ServeSalad()
     {
         for (int i = 0; i < itemsCarrying.Count; i++)
         {
             if (itemsCarrying[i] as Salad)
-                return itemsCarrying[i] as Salad;
+            {
+                Salad s = itemsCarrying[i] as Salad;
+                itemsCarrying.RemoveAt(i);
+                return s;
+            }
         }
         return null;
     }
 
     public void RemoveSalad()
     {
-        for(int i = 0; i < itemsCarrying.Count; i++)
+        for (int i = 0; i < itemsCarrying.Count; i++)
         {
-
+            if (itemsCarrying[i] as Salad)
+            {
+                Salad s = itemsCarrying[i] as Salad;
+                itemsCarrying.RemoveAt(i);
+                return;
+            }
         }
         Debug.Log("No salad to remove");
     }
@@ -235,6 +271,14 @@ public class Player : MonoBehaviour
             Destroy(v.gameObject);
         }
     }
+
+    //public bool CarryingVeggie(Veggie veggieType)
+    //{
+    //    for(int i = 0; i < itemsCarrying.Count; i++)
+    //    {
+    //
+    //    }
+    //}
 
     public void PauseMovement()
     {
