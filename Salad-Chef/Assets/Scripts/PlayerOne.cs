@@ -203,6 +203,7 @@ public class Player : MonoBehaviour
 
             //If the vegetable type is not being carried, clone it 
             Vegetable clone = Instantiate(v);
+            clone.GetComponent<Collider2D>().enabled = false;
 
             //Assign to one of the hands
             if (rightHand.transform.childCount == 0)
@@ -245,6 +246,30 @@ public class Player : MonoBehaviour
         
     }
 
+    public bool TransferItem<T>(T o) where T:MonoBehaviour
+    {
+        if(itemsCarrying.Count < maxCarryCapacity)
+        {
+            if (leftHand.transform.childCount > 0)
+            {
+                o.transform.parent = rightHand.transform;
+                o.transform.localPosition = Vector3.zero;
+                o.transform.localScale = Vector3.one * 0.5f;
+                itemsCarrying.Add(o);
+                return true;
+            }
+            else
+            {
+                o.transform.parent = leftHand.transform;
+                o.transform.localPosition = Vector3.zero;
+                o.transform.localScale = Vector3.one * 0.5f;
+                itemsCarrying.Add(o);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void AddSpeed(float amount)
     {
         Speed = Speed >= 25 ? Speed : Speed + amount;
@@ -277,6 +302,20 @@ public class Player : MonoBehaviour
         return null;
     }
 
+    public void DestroySalad()
+    {
+        for (int i = 0; i < itemsCarrying.Count; i++)
+        {
+            if (itemsCarrying[i] as Salad)
+            {
+                Salad s = itemsCarrying[i] as Salad;
+                itemsCarrying.RemoveAt(i);
+                Destroy(s.gameObject);
+                return;
+            }
+        }
+    }
+
     public void RemoveSalad()
     {
         for (int i = 0; i < itemsCarrying.Count; i++)
@@ -304,13 +343,32 @@ public class Player : MonoBehaviour
         }
     }
 
-    //public bool CarryingVeggie(Veggie veggieType)
-    //{
-    //    for(int i = 0; i < itemsCarrying.Count; i++)
-    //    {
-    //
-    //    }
-    //}
+    public bool HasVeggie(Vegetable v)
+    {
+        for(int i = 0; i < itemsCarrying.Count; i++)
+        {
+            if(itemsCarrying[i] as Vegetable)
+            {
+                Vegetable veg = itemsCarrying[i] as Vegetable;
+                if (v.veggieType == veg.veggieType)
+                    return true;
+            }
+        }
+        return false;
+    }
+    public bool CarryingSalad()
+    {
+        for (int i = 0; i < itemsCarrying.Count; i++)
+        {
+            if (itemsCarrying[i] as Salad)
+            {
+                Salad sal = itemsCarrying[i] as Salad;
+                if (sal)
+                    return true;
+            }
+        }
+        return false;
+    }
 
     public void PauseMovement()
     {

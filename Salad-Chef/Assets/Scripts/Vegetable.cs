@@ -12,12 +12,14 @@ public enum Veggie
     Carrot
 }
 
-
+[RequireComponent(typeof(SpriteRenderer))]
 public class Vegetable : MonoBehaviour, IPickable {
     bool chopped = false;
 
     public Veggie veggieType = Veggie.Tomato;
     
+    public Sprite cutSprite;
+
     public void ShowPrompt(Player p)
     {
         
@@ -54,6 +56,7 @@ public class Vegetable : MonoBehaviour, IPickable {
     public void ChopVegetable()
     {
         chopped = true;
+        GetComponent<SpriteRenderer>().sprite = cutSprite;
     }
 
 }
