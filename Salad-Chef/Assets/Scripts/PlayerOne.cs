@@ -73,8 +73,7 @@ public class Player : MonoBehaviour
     protected void Start()
     {
         TimeLeft = defaultTime; Score = 0; Speed = defaultSpeed;
-
-
+        
         rightHand = transform.Find("Right Hand").gameObject;
         leftHand = transform.Find("Left Hand").gameObject;
         //itemsCarrying = new ArrayList(2);
@@ -91,10 +90,19 @@ public class Player : MonoBehaviour
     {
         if (!GameManager.Instance.Paused)
         {
-            TimeLeft -= Time.deltaTime;
+            if (!pauseMovement)
+            {
+                TimeLeft -= Time.deltaTime;
 
-            if(!pauseMovement)
+                //If player;s time if finished, pause the player and notify the game manager
+                if (TimeLeft <= 0)
+                {
+                    pauseMovement = true;
+                    GameManager.Instance.PlayerLost(this);
+                }
                 gameObject.transform.Translate(Move());
+
+            }
 
             if (Input.GetKeyDown(action))
             {

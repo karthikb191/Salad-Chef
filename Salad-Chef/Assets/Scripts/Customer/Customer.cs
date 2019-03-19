@@ -56,7 +56,7 @@ public class Customer : MonoBehaviour {
     void SetWaitPeriod()
     {
         //Add 15 seconds for every item in the chosen order
-        waitPeriod = saladCombo.Count * 15;
+        waitPeriod = saladCombo.Count * CustomerManager.Instance.defaultWaitPeriod;
         timeLeft = waitPeriod;
 
         //Set the max value of the wait slider
@@ -86,6 +86,7 @@ public class Customer : MonoBehaviour {
         else
         {
             served = true;
+            servedBy = p;
             s.transform.parent = this.transform;
             //Start eating the salad
             StartCoroutine(Eat(s));
@@ -167,6 +168,8 @@ public class Customer : MonoBehaviour {
                 CustomerManager.Instance.CustomerLeftHungry();
             }
         }
+
+        servedBy = null;
         //Score, etc goes here
         CustomerManager.Instance.RemoveCustomer(this);
     }

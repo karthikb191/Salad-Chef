@@ -57,6 +57,7 @@ public class PickUp : MonoBehaviour, IPickable
                 p.AddTime(30);
                 break;
         }
+        Destroy(this.gameObject);
     }
 
     public void Spawn(Player givenTo, Vector3 positioToSpawn)

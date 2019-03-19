@@ -97,7 +97,7 @@ public class ChoppingBoard : MonoBehaviour, IChop {
     {
         boardAssignedTo.PauseMovement();
         //Wait for a while to finish chopping
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
 
         v.ChopVegetable();
 

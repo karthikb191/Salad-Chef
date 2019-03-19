@@ -11,6 +11,7 @@ public class CustomerPoint : MonoBehaviour, IServable {
     public Text Text { get; set; }
     public Slider waitSlider { get; set; }
 
+
     private void Start()
     {
         CustomerPanel = transform.Find("Customer Canvas").GetChild(0).gameObject;

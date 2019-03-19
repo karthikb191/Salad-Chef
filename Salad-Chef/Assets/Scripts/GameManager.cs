@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -8,18 +9,47 @@ public class GameManager : MonoBehaviour {
 
     public bool Paused { get; set; }
 
+    public bool gameOver;
+    
+    public GameObject PlayCanvas;
+    public GameObject GameOverCanvas;
+
+    Player[] playersCurrentlyPlaying;
+    List<Player> playersLost = new List<Player>();
+
     private void Awake()
     {
         Instance = this;
     }
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    private void Start()
+    {
+        Paused = true;
+        playersCurrentlyPlaying = FindObjectsOfType<Player>();
+    }
+
+    public void PlayerLost(Player p)
+    {
+        playersLost.Add(p);
+        //Debug.Log("sd: " + playersLost.Count)
+        if(playersLost.Count == playersCurrentlyPlaying.Length)
+        {
+            GameOverCanvas.SetActive(true);
+            Paused = true;
+        }
+    }
+
+
+    public void Play()
+    {
+        Paused = false;
+        PlayCanvas.SetActive(false);
+    }
+
+    public void TryAgain()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    
 }

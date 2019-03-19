@@ -7,6 +7,7 @@ public class CustomerManager : MonoBehaviour {
     public static CustomerManager Instance { get; set; }
 
     public int DefaultScore = 100;
+    public float defaultWaitPeriod = 15;
     public List<Sprite> customerSprites;
     public GameObject customerPrefab;
 
@@ -45,8 +46,8 @@ public class CustomerManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
-        CustomerInstantiation();
+        if(!GameManager.Instance.Paused)
+            CustomerInstantiation();
 	}
 
     void CustomerInstantiation()
