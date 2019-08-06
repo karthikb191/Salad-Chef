@@ -1,7 +1,6 @@
 # Salad-Chef
-Test for Realworld One
 
-This is a 2-player couch Co-Op game.
+This is a 2-player couch Co-Op game prototype.
 Objective: Get the highest score by serving the salad ordered by the customer before the time runs out
 First player can move the character using (WASD) keys. Action Button is (C). To remove salad from tray, press (X).
 Second player can move the character using (IJKL) keys. Action Button is (N). To remove salad from tray, press (M).
